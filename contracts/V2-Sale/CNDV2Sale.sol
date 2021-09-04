@@ -4,7 +4,7 @@ pragma solidity ^0.8.4;
 
 import "../openzeppelin/contracts/utils/Context.sol";
 import "../openzeppelin/contracts/utils/math/SafeMath.sol";
-import "../CNDV2/IClonesNeverDieV2.sol";
+import "../CND-V2/IClonesNeverDieV2.sol";
 
 contract CNDV2Sale is Context {
 	using SafeMath for uint256;
