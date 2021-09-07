@@ -10,7 +10,7 @@ import "../Nectar/INectar.sol";
 contract LotusStaking is ILotusStaking {
 	INectar public Nectar;
 	IClonesNeverDieV2 public CNDV2;
-	string public constant NAME = "Staking";
+	string public constant NAME = "Lotus";
 	uint256 public constant COIN = 10**uint256(DECIMALS);
 	uint8 public constant DECIMALS = 18;
 	uint32 public constant SUBSIDY_HALVING_INTERVAL = 210000 * 20;
