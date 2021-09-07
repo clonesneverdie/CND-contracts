@@ -32,7 +32,7 @@ contract ClonesNeverDieV2 is Context, ERC721, ERC721Enumerable, AccessControlEnu
 
 	function mint(address to) public virtual onlyMinter {
 		require(totalSupply() < 10000, "Mint end.");
-		_safeMint(to, _tokenIdTracker.current());
+		_mint(to, _tokenIdTracker.current());
 		_tokenIdTracker.increment();
 	}
 
@@ -41,7 +41,14 @@ contract ClonesNeverDieV2 is Context, ERC721, ERC721Enumerable, AccessControlEnu
 		uint256 from = 100 * (lv - 1);
 		uint256 to = 100 * lv;
 		for (uint256 i = from; i < to; i += 1) {
-			_safeMint(msg.sender, i);
+			_mint(msg.sender, i);
+		}
+	}
+
+	function massTransferFrom(address from, address to, uint256[] memory _myTokensId) public {
+		require(_myTokensId.length <= 100, "Can only transfer 100 Clones at a time");
+		for (uint256 i = 0; i < _myTokensId.length; i++) {
+			transferFrom(from, to, _myTokensId[i]);
 		}
 	}
 
