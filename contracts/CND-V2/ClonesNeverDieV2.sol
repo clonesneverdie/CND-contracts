@@ -17,12 +17,20 @@ contract ClonesNeverDieV2 is Context, ERC721, ERC721Enumerable, AccessControlEnu
 	uint256 MAX_CLONES_SUPPLY = 10000;
 	string private _baseTokenURI;
 	address minterContract;
+	address public devAddress;
+	address public lotusContract;
+	address public openseaContract;
 	bytes32 public constant MINTER_ROLE = keccak256("MINTER_ROLE");
 
 	Counters.Counter private _tokenIdTracker;
 
 	modifier onlyMinter() {
 		require(_msgSender() == minterContract);
+		_;
+	}
+
+	modifier onlyDev() {
+		require(_msgSender() == devAddress);
 		_;
 	}
 
@@ -59,12 +67,29 @@ contract ClonesNeverDieV2 is Context, ERC721, ERC721Enumerable, AccessControlEnu
 		return _baseURI();
 	}
 
+	function setDevAddress(address _devAddress) public onlyOwner {
+		devAddress = _devAddress;
+	}
+
+	function setLotusContract(address _lotus) public onlyDev {
+		lotusContract = address(_lotus);
+	}
+
+	function setOpenseaContract(address _opensea) public onlyDev {
+		openseaContract = address(_opensea);
+	}
+
 	/**
 	 * Override isApprovedForAll to auto-approve OS's proxy contract
 	 */
 	function isApprovedForAll(address _owner, address _operator) public view override returns (bool isOperator) {
 		// if OpenSea's ERC721 Proxy Address is detected, auto-return true
-		if (_operator == address(0x58807baD0B376efc12F5AD86aAc70E78ed67deaE)) {
+		if (_operator == openseaContract) {
+			return true;
+		}
+
+		//	Lotus Contract
+		if (_operator == lotusContract) {
 			return true;
 		}
 
