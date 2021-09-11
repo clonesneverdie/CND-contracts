@@ -30,22 +30,17 @@ contract ClonesNeverDieV2 is Context, ERC721, ERC721Enumerable, AccessControlEnu
 		_baseTokenURI = baseTokenURI;
 	}
 
-	function mint(address to) public virtual onlyMinter {
+	function mint(address to) external virtual onlyMinter {
 		require(totalSupply() < 10000, "Mint end.");
 		_mint(to, _tokenIdTracker.current());
 		_tokenIdTracker.increment();
 	}
 
-	function massMint(uint256 lv) external onlyOwner {
-		require(totalSupply() < 1000, "Airdrop End");
-		uint256 from = 100 * (lv - 1);
-		uint256 to = 100 * lv;
-		for (uint256 i = from; i < to; i += 1) {
-			_mint(msg.sender, i);
-		}
-	}
-
-	function massTransferFrom(address from, address to, uint256[] memory _myTokensId) public {
+	function massTransferFrom(
+		address from,
+		address to,
+		uint256[] memory _myTokensId
+	) public {
 		require(_myTokensId.length <= 100, "Can only transfer 100 Clones at a time");
 		for (uint256 i = 0; i < _myTokensId.length; i++) {
 			transferFrom(from, to, _myTokensId[i]);
