@@ -33,17 +33,17 @@ contract LotusStaking is ILotusStaking {
 	uint256 public accSubsidy;
 	uint256 public totalPower;
 
-	constructor(address _nectar, address _cndv2) {
-		Nectar = INectar(_nectar);
+	constructor(address _cndv2, address _nectar) {
 		CNDV2 = IClonesNeverDieV2(_cndv2);
+		Nectar = INectar(_nectar);
 
 		genesisEthBlock = block.number;
 		accSubsidyBlock = block.number;
 		accSubsidy = 0;
 		uint256[] memory nullArr;
 
-		lotuses.push(Lotus({ owner: msg.sender, power: 0, accSubsidy: 0, v2TokensId: nullArr }));
-		totalPower = 0;
+		lotuses.push(Lotus({ owner: msg.sender, power: 1, accSubsidy: 0, v2TokensId: nullArr }));
+		totalPower = 1;
 	}
 
 	function name() external pure override returns (string memory) {
@@ -102,7 +102,7 @@ contract LotusStaking is ILotusStaking {
 		return lotusId;
 	}
 
-	function buyLotus(uint256[] memory myTokensId) external override returns (uint256) {
+	function goLotus(uint256[] memory myTokensId) external override returns (uint256) {
 		CNDV2.massTransferFrom(msg.sender, address(this), myTokensId);
 		uint256 power = myTokensId.length;
 		uint256 lotusId = makeLotus(power, myTokensId);
@@ -110,15 +110,15 @@ contract LotusStaking is ILotusStaking {
 		return lotusId;
 	}
 
-	function sellLotus(uint256 num) external override {
-		uint256 lotusId = ownerPools[msg.sender][num];
+	function outLotus(uint256 ownerPoolsNum) external override {
+		uint256 lotusId = ownerPools[msg.sender][ownerPoolsNum];
 		Lotus storage lotus = lotuses[lotusId];
 		require(lotusId != 0);
 		require(lotus.owner == msg.sender);
 
 		uint256 power = lotus.power;
 		uint256[] memory myTokensId = lotus.v2TokensId;
-		mine(lotusId);
+		mine(ownerPoolsNum);
 
 		delete lotus.v2TokensId;
 		lotus.owner = address(0);
@@ -140,7 +140,8 @@ contract LotusStaking is ILotusStaking {
 		return (calculateAccSubsidy() * lotus.power) / PRECISION - lotus.accSubsidy;
 	}
 
-	function mine(uint256 lotusId) public override returns (uint256) {
+	function mine(uint256 ownerPoolsNum) public override returns (uint256) {
+		uint256 lotusId = ownerPools[msg.sender][ownerPoolsNum];
 		Lotus storage lotus = lotuses[lotusId];
 		require(lotus.owner == msg.sender);
 		uint256 power = lotus.power;

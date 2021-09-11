@@ -15,9 +15,9 @@ interface ILotusStaking {
 
 	function subsidyAt(uint256 blockNumber) external view returns (uint256);
 
-	function buyLotus(uint256[] memory myTokensId) external returns (uint256);
+	function goLotus(uint256[] memory myTokensId) external returns (uint256);
 
-	function sellLotus(uint256 lotusId) external;
+	function outLotus(uint256 lotusId) external;
 
 	function powerOf(uint256 lotusId) external view returns (uint256);
 
