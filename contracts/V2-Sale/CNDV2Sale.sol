@@ -11,7 +11,7 @@ contract CNDV2Sale is Context {
 
 	IClonesNeverDieV2 public CNDV2Contract;
 	uint16 MAX_CLONES_SUPPLY = 10000;
-	uint256 CLONE_PRICE = 30000000000000000; // 0.03 MATIC
+	uint256 CLONE_PRICE = 45000000000000000000; // 45 MATIC
 	uint256 public constant maxClonePurchase = 20;
 	bool public isSale = false;
 	address public C1;
@@ -22,7 +22,6 @@ contract CNDV2Sale is Context {
 		require(isSale, "The sale has not started.");
 		require(CNDV2Contract.totalSupply() < MAX_CLONES_SUPPLY, "Sale has already ended.");
 		require(numberOfTokens <= maxClonePurchase, "Can only mint 20 Clones at a time");
-		require(numberOfTokens <= MAX_CLONES_SUPPLY, "You are not allowed to buy this many Clones at once in this price tier.");
 		require(CNDV2Contract.totalSupply().add(numberOfTokens) <= MAX_CLONES_SUPPLY, "Purchase would exceed max supply of Clones");
 		require(CLONE_PRICE.mul(numberOfTokens) <= msg.value, "MATIC value sent is not correct");
 		_;
@@ -51,14 +50,11 @@ contract CNDV2Sale is Context {
 		_;
 	}
 
-	constructor(
-		address c1,
-		address c2,
-		address c3
-	) {
-		C1 = c1;
-		C2 = c2;
-		C3 = c3;
+	constructor(address v2Contract, address _C1, address _C2, address _C3) {
+		CNDV2Contract = IClonesNeverDieV2(v2Contract);
+		C1 = _C1;
+		C2 = _C2;
+		C3 = _C3;
 	}
 
 	function mintClone(uint256 numberOfTokens) public payable cloneMintRole(numberOfTokens) {
@@ -69,13 +65,22 @@ contract CNDV2Sale is Context {
 		}
 	}
 
+	function preMintClone(uint256 numberOfTokens, address receiver) public onlyCreator {
+		require(!isSale, "The sale has started. Can't call preMintClone");
+		for (uint256 i = 0; i < numberOfTokens; i++) {
+			if (CNDV2Contract.totalSupply() < MAX_CLONES_SUPPLY) {
+				CNDV2Contract.mint(receiver);
+			}
+		}
+	}
+
 	function withdraw() public payable onlyCreator {
 		uint256 contractBalance = address(this).balance;
 		uint256 percentage = contractBalance / 100;
 
 		require(payable(C1).send(percentage * 25));
-		require(payable(C2).send(percentage * 37));
-		require(payable(C3).send(percentage * 38));
+		require(payable(C2).send(percentage * 38));
+		require(payable(C3).send(percentage * 37));
 	}
 
 	function setC1(address changeAddress) public onlyC1 {
