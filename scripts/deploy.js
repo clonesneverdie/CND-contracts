@@ -1,9 +1,9 @@
 const hre = require('hardhat')
 
 async function main() {
-  const C1Adr = '0x20D2b4C589D38579515965FB13b4793B01189D2B'
-  const C2Adr = '0x20D2b4C589D38579515965FB13b4793B01189D2B'
-  const C3Adr = '0x20D2b4C589D38579515965FB13b4793B01189D2B'
+  const C1Adr = "0xED7Df3fE8cB3041090ebCb19964d18A20a4593b4";
+  const C2Adr = "0xe9b4C1e5883A34dB52807197AD391Fc23f5C6d0f";
+  const C3Adr = "0x50ee4b8f2ff7a2b81f94fe1be247e154cfd9c754";
   const openseaContract = '0x58807baD0B376efc12F5AD86aAc70E78ed67deaE'
 
   const CNDV2 = await hre.ethers.getContractFactory('ClonesNeverDieV2')
