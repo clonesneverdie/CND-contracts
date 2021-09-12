@@ -16,11 +16,10 @@ contract ClonesNeverDieV2 is Context, ERC721, ERC721Enumerable, AccessControlEnu
 	string TOKEN_SYMBOL = "CNDV2";
 	uint256 MAX_CLONES_SUPPLY = 10000;
 	string private _baseTokenURI;
-	address minterContract;
+	address public minterContract;
 	address public devAddress;
 	address public lotusContract;
 	address public openseaContract;
-	bytes32 public constant MINTER_ROLE = keccak256("MINTER_ROLE");
 
 	Counters.Counter private _tokenIdTracker;
 
@@ -55,11 +54,11 @@ contract ClonesNeverDieV2 is Context, ERC721, ERC721Enumerable, AccessControlEnu
 		}
 	}
 
-	function setMinterContract(address saleContract) public onlyOwner {
+	function setMinterContract(address saleContract) public onlyDev {
 		minterContract = saleContract;
 	}
 
-	function setBaseURI(string memory baseURI) public onlyOwner {
+	function setBaseURI(string memory baseURI) public onlyDev {
 		_baseTokenURI = baseURI;
 	}
 
