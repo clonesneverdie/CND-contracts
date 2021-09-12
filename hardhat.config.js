@@ -9,6 +9,10 @@ module.exports = {
       url: 'https://dataseed.popcateum.org',
       accounts: [process.env.PK || ''],
     },
+    polygon: {
+      url: 'https://polygon-rpc.com',
+      accounts: [process.env.PK || ''],
+    },
   },
   abiExporter: {
     path: './abi',
