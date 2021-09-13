@@ -33,7 +33,7 @@ contract LotusStaking is ILotusStaking {
 	uint256 public accSubsidy;
 	uint256 public totalPower;
 
-	constructor(address _cndv2, address _nectar) {
+	constructor(address _cndv2, address _nectar, address _genesisLotusOwner) {
 		CNDV2 = IClonesNeverDieV2(_cndv2);
 		Nectar = INectar(_nectar);
 
@@ -42,7 +42,7 @@ contract LotusStaking is ILotusStaking {
 		accSubsidy = 0;
 		uint256[] memory nullArr;
 
-		lotuses.push(Lotus({ owner: msg.sender, power: 1, accSubsidy: 0, v2TokensId: nullArr }));
+		lotuses.push(Lotus({ owner: _genesisLotusOwner, power: 1, accSubsidy: 0, v2TokensId: nullArr }));
 		totalPower = 1;
 	}
 
@@ -64,7 +64,7 @@ contract LotusStaking is ILotusStaking {
 
 	function subsidyAt(uint256 blockNumber) public view override returns (uint256 amount) {
 		uint256 era = (blockNumber - genesisEthBlock) / SUBSIDY_HALVING_INTERVAL;
-		amount = (50 * COIN) / (1**era);
+		amount = (10 * COIN) / (1**era);
 	}
 
 	function calculateAccSubsidy() internal view returns (uint256) {
@@ -89,6 +89,10 @@ contract LotusStaking is ILotusStaking {
 		return accSubsidy + (subsidy * PRECISION) / totalPower;
 	}
 
+	function getLotusV2TokenId(uint256 lotusId) public view returns (uint256[] memory) {
+		return lotuses[lotusId].v2TokensId;
+	}
+
 	function makeLotus(uint256 power, uint256[] memory myTokensId) internal returns (uint256) {
 		require(power > 0);
 
@@ -106,7 +110,7 @@ contract LotusStaking is ILotusStaking {
 		CNDV2.massTransferFrom(msg.sender, address(this), myTokensId);
 		uint256 power = myTokensId.length;
 		uint256 lotusId = makeLotus(power, myTokensId);
-		emit BuyLotus(msg.sender, lotusId, power);
+		emit GoLotus(msg.sender, lotusId, power);
 		return lotusId;
 	}
 
@@ -125,7 +129,21 @@ contract LotusStaking is ILotusStaking {
 		totalPower -= power;
 
 		CNDV2.massTransferFrom(address(this), msg.sender, myTokensId);
-		emit SellLotus(msg.sender, lotusId);
+		emit OutLotus(msg.sender, lotusId);
+	}
+
+	function outGenesisLotus(uint256 _genesisLotus) external {
+		uint256 lotusId = _genesisLotus;
+		Lotus storage lotus = lotuses[lotusId];
+		require(lotus.owner == msg.sender);
+
+		uint256 power = lotus.power;
+		mine(_genesisLotus);
+
+		delete lotus.v2TokensId;
+		lotus.owner = address(0);
+		totalPower -= power;
+		emit OutLotus(msg.sender, lotusId);
 	}
 
 	function powerOf(uint256 lotusId) external view override returns (uint256) {
@@ -142,6 +160,23 @@ contract LotusStaking is ILotusStaking {
 
 	function mine(uint256 ownerPoolsNum) public override returns (uint256) {
 		uint256 lotusId = ownerPools[msg.sender][ownerPoolsNum];
+		Lotus storage lotus = lotuses[lotusId];
+		require(lotus.owner == msg.sender);
+		uint256 power = lotus.power;
+
+		uint256 _accSubsidy = update();
+		uint256 subsidy = (_accSubsidy * power) / PRECISION - lotus.accSubsidy;
+		if (subsidy > 0) {
+			Nectar.mint(msg.sender, subsidy);
+		}
+
+		lotus.accSubsidy = (_accSubsidy * power) / PRECISION;
+		emit Mine(msg.sender, lotusId, subsidy);
+		return subsidy;
+	}
+
+	function genesisLotusMine(uint256 _genesisLotus) public returns (uint256) {
+		uint256 lotusId = _genesisLotus;
 		Lotus storage lotus = lotuses[lotusId];
 		require(lotus.owner == msg.sender);
 		uint256 power = lotus.power;

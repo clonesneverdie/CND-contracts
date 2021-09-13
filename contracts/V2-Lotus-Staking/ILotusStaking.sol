@@ -4,9 +4,8 @@ pragma solidity ^0.8.4;
 interface ILotusStaking {
 	event Transfer(address indexed from, address indexed to, uint256 amount);
 	event Approval(address indexed owner, address indexed spender, uint256 amount);
-	event BuyLotus(address indexed owner, uint256 indexed lotusId, uint256 power);
-	event ChangeLotus(address indexed owner, uint256 indexed lotusId, uint256 power);
-	event SellLotus(address indexed owner, uint256 indexed lotusId);
+	event GoLotus(address indexed owner, uint256 indexed lotusId, uint256 power);
+	event OutLotus(address indexed owner, uint256 indexed lotusId);
 	event Mine(address indexed owner, uint256 indexed lotusId, uint256 subsidy);
 
 	function name() external view returns (string memory);
