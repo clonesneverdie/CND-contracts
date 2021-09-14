@@ -107,6 +107,7 @@ contract LotusStaking is ILotusStaking {
 	}
 
 	function goLotus(uint256[] memory myTokensId) external override returns (uint256) {
+		require(CNDV2.totalSupply() >= 2000, "The total supply has not reached 20%.");
 		CNDV2.massTransferFrom(msg.sender, address(this), myTokensId);
 		uint256 power = myTokensId.length;
 		uint256 lotusId = makeLotus(power, myTokensId);
@@ -138,7 +139,7 @@ contract LotusStaking is ILotusStaking {
 		require(lotus.owner == msg.sender);
 
 		uint256 power = lotus.power;
-		mine(_genesisLotus);
+		genesisLotusMine(_genesisLotus);
 
 		delete lotus.v2TokensId;
 		lotus.owner = address(0);
