@@ -15,6 +15,7 @@ contract ClonesNeverDieV2 is Context, ERC721, ERC721Enumerable, AccessControlEnu
 	string TOKEN_NAME = "Clones Never Die V2";
 	string TOKEN_SYMBOL = "CNDV2";
 	uint256 MAX_CLONES_SUPPLY = 10000;
+	string public clonesHash = "b89eb362e146c38193a9e6d29a1631a7e845ce553aac13a5fedf7ff735541e64";
 	string private _baseTokenURI;
 	address public minterContract;
 	address public devAddress;
