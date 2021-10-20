@@ -13,7 +13,7 @@ contract AssetsLotteryV1 is Context {
 	INectar public Nectar;
 	ICNDAsset public Asset;
 
-	uint16 MAX_SALES_SUPPLY = 3;
+	uint16 MAX_SALES_SUPPLY = 300;
 	uint256 ASSETS_PRICE = 15000000000000000000000; // 15000 NECTAR
 	uint256 currentSaleCount = 0;
 	bool public isSale = false;
@@ -21,8 +21,6 @@ contract AssetsLotteryV1 is Context {
 	uint256[] randomNum;
 	address devTeam;
 	address contractAddress;
-
-	mapping(uint256 => bool) indexOfAsset;
 
 	modifier onlyDev() {
 		require(_msgSender() == devTeam);
