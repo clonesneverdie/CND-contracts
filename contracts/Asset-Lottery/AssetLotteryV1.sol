@@ -15,13 +15,13 @@ contract AssetsLotteryV1 is Context {
 
 	uint16 MAX_SALES_SUPPLY = 300;
 	uint256 ASSETS_PRICE = 15000000000000000000000; // 15000 NECTAR
-	uint256 currentSaleCount = 0;
+	uint256 public currentSaleCount = 0;
 	bool public isSale = false;
-	address[] buyer;
-	uint256[] randomNum;
-	address devTeam;
+	uint256[] private randomNum;
+	address[] public buyer;
 	address contractAddress;
-	address assetStoredAddress;
+	address public devTeam;
+	address public assetStoredAddress;
 
 	modifier onlyDev() {
 		require(_msgSender() == devTeam);
