@@ -72,8 +72,8 @@ contract CNDAsset is Ownable, Pausable, ERC1155Supply, ContextMixin {
 		openseaContract = address(_opensea);
 	}
 
-	function setSaleContract(address _lotus) public onlyDev {
-		saleContract = address(_lotus);
+	function setSaleContract(address _sale) public onlyDev {
+		saleContract = address(_sale);
 	}
 
 	function setV3Contract(address _v3) public onlyDev {

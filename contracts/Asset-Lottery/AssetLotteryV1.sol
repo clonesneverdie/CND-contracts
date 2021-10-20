@@ -21,6 +21,7 @@ contract AssetsLotteryV1 is Context {
 	uint256[] randomNum;
 	address devTeam;
 	address contractAddress;
+	address assetStoredAddress;
 
 	modifier onlyDev() {
 		require(_msgSender() == devTeam);
@@ -43,7 +44,7 @@ contract AssetsLotteryV1 is Context {
 		require(balance >= ASSETS_PRICE, "Not enough Nectar");
 		Nectar.transferFrom(_msgSender() ,contractAddress, ASSETS_PRICE);
 		buyer.push(_msgSender());
-		Asset.safeTransferFrom(address(this), _msgSender(), randomNum[currentSaleCount], 1, "");
+		Asset.safeTransferFrom(assetStoredAddress, _msgSender(), randomNum[currentSaleCount], 1, "");
 		currentSaleCount++;
 	}
 
@@ -60,6 +61,10 @@ contract AssetsLotteryV1 is Context {
 
 	function setAssetsCA(address _address) public onlyDev {
 		Asset = ICNDAsset(_address);
+	}
+
+	function setStoredAddress(address _assetStoredAddress) public onlyDev {
+		assetStoredAddress = _assetStoredAddress;
 	}
 
 	function reset() public onlyDev {

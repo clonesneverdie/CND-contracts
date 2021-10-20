@@ -3,7 +3,7 @@ require('hardhat-abi-exporter')
 require('dotenv').config()
 
 module.exports = {
-  solidity: '0.8.4',
+  solidity: '0.8.7',
   networks: {
     popcateum: {
       url: 'https://dataseed.popcateum.org',
