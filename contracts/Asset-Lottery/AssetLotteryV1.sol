@@ -19,7 +19,7 @@ contract AssetsLotteryV1 is Context {
 	bool public isSale = false;
 	uint256[] private randomNum;
 	address[] public buyer;
-	address contractAddress;
+	address public contractAddress;
 	address public devTeam;
 	address public assetStoredAddress;
 
