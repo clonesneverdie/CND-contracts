@@ -57,12 +57,16 @@ contract Royalty is Context {
 	}
 
 	function withdrawWeth() public onlyCreator {
-		uint256 balance = weth.balanceOf(contractAddress);
+		uint256 balance = getWethBalance();
 		uint256 transferBalance = SafeMath.div(balance, 100);
 		weth.transfer(C1, transferBalance * 36);
 		weth.transfer(C2, transferBalance * 34);
 		weth.transfer(C3, transferBalance * 20);
 		weth.transfer(C4, transferBalance * 10);
+	}
+
+	function getWethBalance() public view returns (uint256) {
+		return weth.balanceOf(contractAddress);
 	}
 
 	function setWeth(address _ca) public onlyC2 {
