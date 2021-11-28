@@ -26,19 +26,23 @@ contract ClonesNeverDieV1 is Context, ERC721, ERC721Enumerable, AccessControlEnu
 		_;
 	}
 
-	constructor(string memory baseTokenURI, address _devAddress, address _openseaCA) ERC721(TOKEN_NAME, TOKEN_SYMBOL) {
+	constructor(
+		string memory baseTokenURI,
+		address _devAddress,
+		address _openseaCA
+	) ERC721(TOKEN_NAME, TOKEN_SYMBOL) {
 		_baseTokenURI = baseTokenURI;
-    setDevAddress(_devAddress);
-    setOpenseaContract(_openseaCA);
-    mint(msg.sender);
+		setDevAddress(_devAddress);
+		setOpenseaContract(_openseaCA);
+		mint(msg.sender);
 	}
 
-  function mint(address to) internal {
-    require(totalSupply() <= MAX_CLONES_SUPPLY, "Mint end.");
-    for (uint256 i = 1; i <= MAX_CLONES_SUPPLY; i++) {
-      _mint(to, i);
-    }
-  }
+	function mint(address to) internal {
+		require(totalSupply() <= MAX_CLONES_SUPPLY, "Mint end.");
+		for (uint256 i = 1; i <= MAX_CLONES_SUPPLY; i++) {
+			_mint(to, i);
+		}
+	}
 
 	function massTransferFrom(
 		address from,
@@ -51,7 +55,7 @@ contract ClonesNeverDieV1 is Context, ERC721, ERC721Enumerable, AccessControlEnu
 		}
 	}
 
-  function listAirdrip(
+	function listAirdrip(
 		address from,
 		address[] memory user,
 		uint256[] memory tokenId
